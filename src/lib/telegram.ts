@@ -1,8 +1,9 @@
-import { sessions, TelegramClient } from 'telegram';
+import { Logger, sessions, TelegramClient } from 'telegram';
 import type { TelegramClientParams as BaseParams } from 'telegram/client/telegramBaseClient';
 import { LogLevel } from 'telegram/extensions/Logger';
 import { isSocks, parseProxy } from '@/lib/socks-proxy';
-import * as authMethods from 'telegram/client/auth';
+import { getPackageVersion } from '@/utils/get-package-info';
+import type { UserAuthParams } from 'telegram/client/auth';
 
 export const TG_API_ID = Number(process.env.TG_API_ID || 164290);
 export const TG_API_HASH = process.env.TG_API_HASH || 'c65fac5f4bdf492be82d4f5648fa69bc';
@@ -13,11 +14,14 @@ export interface TelegramClientParams extends BaseParams {
   session?: string | sessions.StringSession;
 }
 
-export function getTelegramClient(params: TelegramClientParams) {
+export async function getTelegramClient(params: TelegramClientParams) {
   const { session, ...rest } = params;
 
-  const client = new TelegramClient(session || '', TG_API_ID, TG_API_HASH, rest);
-  client.setLogLevel(LogLevel.ERROR);
+  const client = new TelegramClient(session || new StringSession(''), TG_API_ID, TG_API_HASH, {
+    ...rest,
+    baseLogger: new Logger(LogLevel.ERROR),
+    appVersion: await getPackageVersion(),
+  });
 
   return client;
 }
@@ -40,7 +44,7 @@ function getProxyFromString(proxy: string): TelegramProxy {
   };
 }
 
-export interface GenerateSessionOptions extends authMethods.UserAuthParams {
+export interface GenerateSessionOptions extends UserAuthParams {
   timeout?: number;
   proxy?: string | undefined;
 }
@@ -61,7 +65,7 @@ export async function generateSession({
     params.proxy = getProxyFromString(proxy);
   }
 
-  const client = getTelegramClient(params);
+  const client = await getTelegramClient(params);
 
   await client.start(authParams);
 

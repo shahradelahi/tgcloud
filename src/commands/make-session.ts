@@ -43,7 +43,7 @@ export const makeSession = new Command()
       });
 
       // check season file exists
-      if (await checkoutSession(sessionDir, options.sessionName)) {
+      if (!!(await checkoutSession(sessionDir, options.sessionName))) {
         // send confirmation to overwrite
         const { overwrite } = await prompts({
           type: 'confirm',

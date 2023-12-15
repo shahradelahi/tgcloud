@@ -1,18 +1,26 @@
 import { fsAccess } from '@/utils/fs-access';
 import { resolve } from 'node:path';
 import { promises } from 'node:fs';
+import { StringSession } from 'telegram/sessions';
 
-export async function checkoutSession(path: string, sessionName: string) {
+export async function checkoutSession(
+  path: string,
+  sessionName: string,
+): Promise<StringSession | undefined> {
   const sessionPath = resolve(path, `id_${sessionName}`);
   const exists = await fsAccess(sessionPath);
 
   if (!exists) {
-    return false;
+    return;
   }
 
   await fixPermission(path, sessionName);
 
-  return true;
+  const session = await promises.readFile(sessionPath, {
+    encoding: 'utf-8',
+  });
+
+  return new StringSession(session);
 }
 
 export async function saveSession(path: string, sessionName: string, session: string) {
