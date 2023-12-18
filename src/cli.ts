@@ -3,6 +3,7 @@
 import { Command } from 'commander';
 import { makeSession } from './commands';
 import { getPackageVersion } from '@/utils/get-package-info';
+import dotenv from 'dotenv';
 
 process.on('SIGINT', () => process.exit(0));
 process.on('SIGTERM', () => process.exit(0));
@@ -14,6 +15,8 @@ async function main() {
     .version(await getPackageVersion(), '-v, --version', 'display the version number');
 
   program.addCommand(makeSession);
+
+  dotenv.config();
 
   program.parse();
 }

@@ -1,4 +1,4 @@
-import { Logger, sessions, TelegramClient } from 'telegram';
+import { Api, Logger, sessions, TelegramClient } from 'telegram';
 import type { TelegramClientParams as BaseParams } from 'telegram/client/telegramBaseClient';
 import { LogLevel } from 'telegram/extensions/Logger';
 import { isSocks, parseProxy } from '@/lib/socks-proxy';
@@ -73,3 +73,83 @@ export async function generateSession({
 
   return session.save();
 }
+
+/**
+ * This method that will be used to read the given chat history and store message id of
+ * the media messages in its own cache.
+ *
+ * The `TelegramCloud.list()` function before start uses this to catch up with the latest messages.
+ **/
+export async function syncChatMedia(chat: string = 'me') {}
+
+export async function listChatMedia(chat: string = 'me') {}
+
+/**
+ * This method will read the entry history of the given chat and returns the list of
+ * messages.
+ **/
+export async function getEntryChatHistory(
+  client: TelegramClient,
+  { peer, max }: { peer: string; max?: number } = { peer: 'me' },
+) {
+  let result = await client.invoke(
+    new Api.messages.GetHistory({
+      peer,
+      limit: 1,
+    }),
+  );
+
+  if (result.className === 'messages.MessagesNotModified') {
+    return [];
+  }
+
+  const messages: Api.TypeMessage[] = [];
+  const limit = 100;
+
+  messages.push(...result.messages);
+
+  if (result.className === 'messages.MessagesSlice') {
+    const { count } = result;
+    const threadMax = Math.ceil(Math.min(count, max || count) / limit);
+
+    const promises = Array.from({ length: threadMax }, async (_, thread) => {
+      const result = await client.invoke(
+        new Api.messages.GetHistory({
+          peer,
+          limit,
+          addOffset: thread * limit,
+        }),
+      );
+      if (result.className === 'messages.MessagesNotModified') {
+        return [];
+      }
+      return result.messages;
+    });
+
+    const messages = (await Promise.all(promises)).flat();
+
+    // sort messages by id
+    return messages.sort((a, b) => b.id - a.id);
+  }
+
+  return messages;
+}
+
+//     while (result.messages.length > 0) {
+//       const lastMessage: Api.TypeMessage = result.messages[result.messages.length - 1];
+//
+//       console.log(lastMessage.id);
+//       result = await client.invoke(
+//         new Api.messages.GetHistory({
+//           peer,
+//           limit,
+//           offsetId: lastMessage.id,
+//         }),
+//       );
+//
+//       if (result.className === 'messages.MessagesNotModified') {
+//         break;
+//       }
+//
+//       messages.push(...result.messages);
+//     }

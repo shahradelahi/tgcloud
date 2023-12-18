@@ -15,7 +15,7 @@ export const makeSession = new Command()
   .option(
     '-S, --store-dir <directory>',
     'A path to a file where the session will be stored.',
-    '~/tgcloud',
+    '~/.tgcloud',
   )
   .option('--proxy <proxy>', 'Use a socks5 proxy to connect to Telegram.')
   .option('--cwd <cwd>', 'A path to a directory where the session will be stored.', process.cwd())
@@ -28,7 +28,7 @@ export const makeSession = new Command()
       const options = z
         .object({
           sessionName: z.string(),
-          storeDir: z.string().default('~/tgcloud'),
+          storeDir: z.string().default('~/.tgcloud'),
           proxy: z.string().optional(),
           cwd: z.string().default(process.cwd()),
         })
