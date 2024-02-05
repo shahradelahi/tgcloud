@@ -1,20 +1,20 @@
 #!/usr/bin/env node
 
 import { Command } from 'commander';
-import { makeSession } from './commands';
+import { makeSession, upload } from './commands';
 import { getPackageVersion } from '@/utils/get-package-info';
 import dotenv from 'dotenv';
 
 process.on('SIGINT', () => process.exit(0));
 process.on('SIGTERM', () => process.exit(0));
 
-async function main() {
+function main() {
   const program = new Command()
     .name('tgcloud')
     .description('A CLI tool for managing Telegram Cloud files.')
-    .version(await getPackageVersion(), '-v, --version', 'display the version number');
+    .version(getPackageVersion(), '-v, --version', 'display the version number');
 
-  program.addCommand(makeSession);
+  program.addCommand(makeSession).addCommand(upload);
 
   dotenv.config();
 

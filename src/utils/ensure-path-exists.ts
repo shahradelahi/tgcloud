@@ -1,5 +1,5 @@
 import { MakeDirectoryOptions, promises } from 'node:fs';
-import { fsAccess } from '@/utils/fs-access';
+import { fsAccess } from '@/utils/fs-extra';
 import { resolve } from 'path';
 
 export async function ensurePathExists(

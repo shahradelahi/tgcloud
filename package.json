@@ -1,7 +1,21 @@
 {
   "name": "tgcloud",
-  "version": "0.1.0",
-  "description": "",
+  "version": "0.1.0-canary.0",
+  "description": "A CLI and utilities to manage Telegram Cloud written for Node.js",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist/**"
+  ],
+  "exports": {
+    ".": {
+      "require": {
+        "types": "./dist/lib.d.ts",
+        "default": "./dist/lib.js"
+      }
+    }
+  },
+  "bin": "./dist/cli.js",
   "scripts": {
     "dev": "tsup --watch",
     "build": "tsup",
@@ -11,12 +25,9 @@
     "test": "mocha",
     "prepublishOnly": "pnpm run format:check && pnpm run typecheck && pnpm run build"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/shahradelahi/tgcloud.git"
-  },
-  "private": true,
+  "packageManager": "pnpm@8.11.0",
   "dependencies": {
+    "@litehex/node-checksum": "^0.1.2",
     "archiver": "^6.0.1",
     "chalk": "^4.1.2",
     "commander": "^11.1.0",
@@ -41,5 +52,14 @@
     "tsx": "^4.6.2",
     "type-fest": "^4.8.3",
     "typescript": "^5.3.3"
+  },
+  "license": "GPL-3.0",
+  "author": "Shahrad Elahi <shahrad@litehex.com> (https://github.com/shahradelahi)",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shahradelahi/tgcloud.git"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

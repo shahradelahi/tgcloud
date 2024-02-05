@@ -5,7 +5,7 @@ import { z } from 'zod';
 import { generateSession } from '@/lib/telegram';
 import prompts from 'prompts';
 import { ensurePathExists } from '@/utils/ensure-path-exists';
-import { checkoutSession, saveSession } from '@/lib/local-session';
+import { checkoutSession, saveSession } from '@/lib/session';
 import { resolve } from 'node:path';
 import chalk from 'chalk';
 

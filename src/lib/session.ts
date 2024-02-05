@@ -1,4 +1,4 @@
-import { fsAccess } from '@/utils/fs-access';
+import { fsAccess } from '@/utils/fs-extra';
 import { resolve } from 'node:path';
 import { promises } from 'node:fs';
 import { StringSession } from 'telegram/sessions';
@@ -8,7 +8,7 @@ export async function checkoutSession(
   sessionName: string,
 ): Promise<StringSession | undefined> {
   const sessionPath = resolve(path, `id_${sessionName}`);
-  const exists = await fsAccess(sessionPath);
+  const exists = fsAccess(sessionPath);
 
   if (!exists) {
     return;

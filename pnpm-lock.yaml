@@ -5,6 +5,9 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
+  '@litehex/node-checksum':
+    specifier: ^0.1.2
+    version: 0.1.2
   archiver:
     specifier: ^6.0.1
     version: 6.0.1
@@ -505,6 +508,14 @@ packages:
       '@jridgewell/resolve-uri': 3.1.1
       '@jridgewell/sourcemap-codec': 1.4.15
     dev: true
+
+  /@litehex/node-checksum@0.1.2:
+    resolution: {integrity: sha512-DiwMBDEMOkQ2fb3F4T9zeTB9IOHD6zKl7SxL60Ekft0lz2LXjiVAZt2RA1cNu/+0VVpXFCOXdMTKC+2O7LT7uQ==}
+    hasBin: true
+    dependencies:
+      commander: 11.1.0
+      crc-32: 1.2.2
+    dev: false
 
   /@nodelib/fs.scandir@2.1.5:
     resolution: {integrity: sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g==}
